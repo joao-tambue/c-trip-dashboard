@@ -63,12 +63,12 @@ const links = [[{
 }], [{
   label: 'Feedback',
   icon: 'i-lucide-message-circle',
-  to: '#',
+  to: '#'
   // target: '_blank'
 }, {
   label: 'Ajuda e suporte',
   icon: 'i-lucide-info',
-  to: '#',
+  to: '#'
   // target: '_blank'
 }]] satisfies NavigationMenuItem[][]
 
