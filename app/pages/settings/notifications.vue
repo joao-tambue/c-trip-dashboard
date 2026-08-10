@@ -20,20 +20,20 @@ const secoes = [{
     description: 'Receba notificações na área de trabalho.'
   }]
 }, {
-  title: 'Atualizações da conta',
-  description: 'Receba atualizações sobre o Nuxt UI.',
+  title: 'Actividade da plataforma',
+  description: 'Receba avisos sobre o que acontece na sua área do C-Trip.',
   fields: [{
     name: 'resumo_semanal',
     label: 'Resumo semanal',
-    description: 'Receba um resumo semanal de notícias.'
+    description: 'Receba um resumo semanal de reservas, ocupação e receita.'
   }, {
     name: 'atualizacoes_produto',
-    label: 'Atualizações de produto',
-    description: 'Receba um e-mail mensal com todas as novas funcionalidades e atualizações.'
+    label: 'Novidades da plataforma',
+    description: 'Receba um e-mail quando houver novas funcionalidades no portal C-Trip.'
   }, {
     name: 'atualizacoes_importantes',
-    label: 'Atualizações importantes',
-    description: 'Receba e-mails sobre atualizações importantes, como correções de segurança, manutenção, etc.'
+    label: 'Avisos importantes',
+    description: 'Receba e-mails sobre manutenções, segurança e alterações que afectem a sua conta.'
   }]
 }]
 

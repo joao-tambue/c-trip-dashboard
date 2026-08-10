@@ -6,6 +6,14 @@ export default defineNuxtConfig({
     '@vueuse/nuxt'
   ],
 
+  // Regista os componentes pelo nome do ficheiro, sem prefixar pela pasta
+  // (ex.: `app/components/frota/AutocarroCard.vue` → `<AutocarroCard>`).
+  // Todas as pastas de componentes usam nomes já únicos entre si.
+  components: [{
+    path: '~/components',
+    pathPrefix: false
+  }],
+
   devtools: {
     enabled: true
   },

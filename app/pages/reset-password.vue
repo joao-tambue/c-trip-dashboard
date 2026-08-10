@@ -7,7 +7,7 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Redefinir senha'
+  title: 'Redefinir senha · C-Trip'
 })
 
 const rota = useRoute()
