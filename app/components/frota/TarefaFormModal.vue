@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { MembroEquipa, Tarefa } from '~/types'
+import type { EstadoTarefa, MembroEquipa, Tarefa } from '~/types'
 
-const aberto = ref(false)
+const aberto = defineModel<boolean>('open', { default: false })
+
+const props = defineProps<{
+  tarefa?: Tarefa | null
+  estadoInicial?: EstadoTarefa
+}>()
 
 const emit = defineEmits<{
-  criar: [dados: Omit<Tarefa, 'id' | 'estado'>]
+  guardar: [dados: Omit<Tarefa, 'id'>, id?: number]
 }>()
 
 const { data: equipa } = await useFetch<MembroEquipa[]>('/api/frota/equipa', { default: () => [] })
@@ -17,25 +22,35 @@ const esquema = z.object({
   descricao: z.string().min(4, 'Muito curto'),
   atribuidoA: z.string().min(1, 'Escolha um funcionário'),
   prioridade: z.enum(['baixa', 'media', 'alta']),
-  prazo: z.string().min(1, 'Defina um prazo')
+  prazo: z.string().min(1, 'Defina um prazo'),
+  estado: z.enum(['pendente', 'em_curso', 'concluida'])
 })
 
 type Esquema = z.output<typeof esquema>
 
-const estadoInicial: Esquema = { titulo: '', descricao: '', atribuidoA: '', prioridade: 'media', prazo: '' }
-const estado = reactive<Esquema>({ ...estadoInicial })
+const estadoVazio: Esquema = { titulo: '', descricao: '', atribuidoA: '', prioridade: 'media', prazo: '', estado: 'pendente' }
+const estado = reactive<Esquema>({ ...estadoVazio })
+
+watch([aberto, () => props.tarefa], ([estaAberto, tarefa]) => {
+  if (!estaAberto) return
+
+  Object.assign(estado, tarefa
+    ? { titulo: tarefa.titulo, descricao: tarefa.descricao, atribuidoA: tarefa.atribuidoA, prioridade: tarefa.prioridade, prazo: tarefa.prazo, estado: tarefa.estado }
+    : { ...estadoVazio, estado: props.estadoInicial ?? 'pendente' })
+}, { immediate: true })
 
 function aoEnviar(event: FormSubmitEvent<Esquema>) {
-  emit('criar', event.data)
+  emit('guardar', event.data, props.tarefa?.id)
   aberto.value = false
-  Object.assign(estado, estadoInicial)
 }
 </script>
 
 <template>
-  <UModal v-model:open="aberto" title="Nova tarefa" description="Atribua uma tarefa a um funcionário da equipa.">
-    <UButton label="Nova tarefa" icon="i-lucide-plus" />
-
+  <UModal
+    v-model:open="aberto"
+    :title="tarefa ? 'Editar tarefa' : 'Nova tarefa'"
+    description="Atribua a tarefa a um funcionário e escolha em que coluna deve aparecer."
+  >
     <template #body>
       <UForm
         :schema="esquema"
@@ -75,9 +90,22 @@ function aoEnviar(event: FormSubmitEvent<Esquema>) {
             />
           </UFormField>
         </div>
-        <UFormField label="Prazo" name="prazo">
-          <UInput v-model="estado.prazo" type="datetime-local" class="w-full" />
-        </UFormField>
+        <div class="grid grid-cols-2 gap-4">
+          <UFormField label="Prazo" name="prazo">
+            <UInput v-model="estado.prazo" type="datetime-local" class="w-full" />
+          </UFormField>
+          <UFormField label="Coluna" name="estado">
+            <USelect
+              v-model="estado.estado"
+              :items="[
+                { label: 'Por fazer', value: 'pendente' },
+                { label: 'Em progresso', value: 'em_curso' },
+                { label: 'Concluído', value: 'concluida' }
+              ]"
+              class="w-full"
+            />
+          </UFormField>
+        </div>
         <div class="flex justify-end gap-2">
           <UButton
             label="Cancelar"
@@ -85,7 +113,7 @@ function aoEnviar(event: FormSubmitEvent<Esquema>) {
             variant="subtle"
             @click="aberto = false"
           />
-          <UButton label="Criar tarefa" type="submit" />
+          <UButton :label="tarefa ? 'Guardar alterações' : 'Criar tarefa'" type="submit" />
         </div>
       </UForm>
     </template>
