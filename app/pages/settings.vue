@@ -7,10 +7,6 @@ const links = [[{
   to: '/settings',
   exact: true
 }, {
-  label: 'Membros',
-  icon: 'i-lucide-users',
-  to: '/settings/members'
-}, {
   label: 'Notificações',
   icon: 'i-lucide-bell',
   to: '/settings/notifications'
@@ -19,10 +15,9 @@ const links = [[{
   icon: 'i-lucide-shield',
   to: '/settings/security'
 }], [{
-  label: 'Documentação',
-  icon: 'i-lucide-book-open',
-  to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
-  target: '_blank'
+  label: 'Ajuda e suporte',
+  icon: 'i-lucide-info',
+  to: '#'
 }]] satisfies NavigationMenuItem[][]
 </script>
 

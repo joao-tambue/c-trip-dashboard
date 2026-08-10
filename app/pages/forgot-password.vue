@@ -7,7 +7,7 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Recuperar senha'
+  title: 'Recuperar senha · C-Trip'
 })
 
 const carregando = ref(false)
@@ -18,7 +18,7 @@ const campos: AuthFormField[] = [{
   name: 'email',
   type: 'text',
   label: 'E-mail',
-  placeholder: 'voce@exemplo.com',
+  placeholder: 'nome.apelido@empresa.co.ao',
   required: true
 }]
 

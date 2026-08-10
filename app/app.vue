@@ -13,19 +13,18 @@ useHead({
     { rel: 'icon', href: '/favicon.ico' }
   ],
   htmlAttrs: {
-    lang: 'pt-BR'
+    lang: 'pt-AO'
   }
 })
 
-const title = 'Nuxt Painel de Controle'
-const description = 'Um template profissional de painel de controle construído com Nuxt UI, com várias páginas, visualização de dados e recursos abrangentes de gerenciamento para criar interfaces administrativas poderosas.'
+const title = 'C-Trip · Portal interno'
+const description = 'Portal de gestão do marketplace de bilhética interprovincial C-Trip — administração da plataforma, gestão de frota e equipa, e publicação de rotas.'
 
 useSeoMeta({
   title,
   description,
   ogTitle: title,
   ogDescription: description,
-  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/dashboard-light.png',
   twitterCard: 'summary_large_image'
 })
 </script>

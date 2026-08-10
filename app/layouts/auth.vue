@@ -5,9 +5,9 @@ const colorMode = useColorMode()
 <template>
   <div class="min-h-screen flex flex-col">
     <header class="flex items-center justify-between p-4 sm:p-6">
-      <NuxtLink to="/" class="flex items-center gap-2 font-semibold text-highlighted">
-        <UIcon name="i-lucide-layout-dashboard" class="size-5 text-primary" />
-        Painel
+      <NuxtLink to="/login" class="flex items-center gap-2 font-semibold text-highlighted">
+        <UIcon name="i-lucide-bus-front" class="size-5 text-primary" />
+        C-Trip
       </NuxtLink>
 
       <ClientOnly>
@@ -27,7 +27,7 @@ const colorMode = useColorMode()
     </header>
 
     <main class="flex-1 flex items-center justify-center px-4 py-8 sm:px-6">
-      <UCard variant="subtle" class="w-full max-w-sm">
+      <UCard variant="subtle" class="w-full max-w-md">
         <slot />
       </UCard>
     </main>

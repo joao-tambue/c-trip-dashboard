@@ -3,11 +3,12 @@ import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
 const refArquivo = ref<HTMLInputElement>()
+const { currentUser } = useAuth()
 
 const esquemaPerfil = z.object({
   name: z.string().min(2, 'Muito curto'),
   email: z.string().email('E-mail inválido'),
-  username: z.string().min(2, 'Muito curto'),
+  cargo: z.string().min(2, 'Muito curto'),
   avatar: z.string().optional(),
   bio: z.string().optional()
 })
@@ -15,21 +16,21 @@ const esquemaPerfil = z.object({
 type EsquemaPerfil = z.output<typeof esquemaPerfil>
 
 const perfil = reactive<Partial<EsquemaPerfil>>({
-  name: 'Benjamin Canac',
-  email: 'ben@nuxtlabs.com',
-  username: 'benjamincanac',
-  avatar: undefined,
+  name: currentUser.value?.name,
+  email: currentUser.value?.email,
+  cargo: currentUser.value?.cargo,
+  avatar: currentUser.value?.avatar?.src,
   bio: undefined
 })
+
 const toast = useToast()
-async function aoEnviar(event: FormSubmitEvent<EsquemaPerfil>) {
+async function aoEnviar(_event: FormSubmitEvent<EsquemaPerfil>) {
   toast.add({
     title: 'Sucesso',
-    description: 'Suas configurações foram atualizadas.',
+    description: 'As suas informações foram actualizadas.',
     icon: 'i-lucide-check',
     color: 'success'
   })
-  console.log(event.data)
 }
 
 function aoMudarArquivo(e: Event) {
@@ -56,14 +57,14 @@ function aoClicarArquivo() {
   >
     <UPageCard
       title="Perfil"
-      description="Estas informações serão exibidas publicamente."
+      description="Estas informações identificam-no perante os restantes utilizadores do portal."
       variant="naked"
       orientation="horizontal"
       class="mb-4"
     >
       <UButton
         form="settings"
-        label="Salvar alterações"
+        label="Guardar alterações"
         color="neutral"
         type="submit"
         class="w-fit lg:ms-auto"
@@ -74,7 +75,7 @@ function aoClicarArquivo() {
       <UFormField
         name="name"
         label="Nome"
-        description="Aparecerá em recibos, faturas e outras comunicações."
+        description="Usado nos registos de auditoria e nas comunicações com empresas e passageiros."
         required
         class="flex max-sm:flex-col justify-between items-start gap-4"
       >
@@ -87,7 +88,7 @@ function aoClicarArquivo() {
       <UFormField
         name="email"
         label="E-mail"
-        description="Usado para entrar, receber recibos por e-mail e atualizações de produto."
+        description="Usado para iniciar sessão no portal C-Trip."
         required
         class="flex max-sm:flex-col justify-between items-start gap-4"
       >
@@ -99,22 +100,21 @@ function aoClicarArquivo() {
       </UFormField>
       <USeparator />
       <UFormField
-        name="username"
-        label="Nome de usuário"
-        description="Seu nome de usuário exclusivo para login e URL do seu perfil."
+        name="cargo"
+        label="Cargo"
+        description="Aparece junto ao seu nome no menu do portal."
         required
         class="flex max-sm:flex-col justify-between items-start gap-4"
       >
         <UInput
-          v-model="perfil.username"
-          type="username"
+          v-model="perfil.cargo"
           autocomplete="off"
         />
       </UFormField>
       <USeparator />
       <UFormField
         name="avatar"
-        label="Avatar"
+        label="Fotografia"
         description="JPG, GIF ou PNG. Máx. 1MB."
         class="flex max-sm:flex-col justify-between sm:items-center gap-4"
       >
@@ -141,8 +141,8 @@ function aoClicarArquivo() {
       <USeparator />
       <UFormField
         name="bio"
-        label="Biografia"
-        description="Breve descrição do seu perfil. URLs são transformadas em links."
+        label="Notas"
+        description="Visível apenas para si — use para lembretes internos. URLs são transformados em links."
         class="flex max-sm:flex-col justify-between items-start gap-4"
         :ui="{ container: 'w-full' }"
       >

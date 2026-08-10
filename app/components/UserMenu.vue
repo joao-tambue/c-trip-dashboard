@@ -7,30 +7,21 @@ defineProps<{
 
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
+const { currentUser, logout } = useAuth()
 
 const cores = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutros = ['slate', 'gray', 'zinc', 'neutral', 'stone', 'taupe', 'mauve', 'mist', 'olive']
 
-const usuario = ref({
-  name: 'Benjamin Canac',
-  avatar: {
-    src: 'https://github.com/benjamincanac.png',
-    alt: 'Benjamin Canac'
-  }
-})
-
 const itens = computed<DropdownMenuItem[][]>(() => ([[{
   type: 'label',
-  label: usuario.value.name,
-  avatar: usuario.value.avatar
+  label: currentUser.value?.name ?? '',
+  avatar: currentUser.value?.avatar
+}, {
+  type: 'label',
+  label: currentUser.value?.cargo ?? '',
+  disabled: true
 }], [{
-  label: 'Perfil',
-  icon: 'i-lucide-user'
-}, {
-  label: 'Cobrança',
-  icon: 'i-lucide-credit-card'
-}, {
-  label: 'Configurações',
+  label: 'Definições',
   icon: 'i-lucide-settings',
   to: '/settings'
 }], [{
@@ -105,9 +96,12 @@ const itens = computed<DropdownMenuItem[][]>(() => ([[{
     }
   }]
 }], [{
-  label: 'Sair',
+  label: 'Terminar sessão',
   icon: 'i-lucide-log-out',
-  onSelect: () => navigateTo('/login')
+  onSelect: () => {
+    logout()
+    navigateTo('/login')
+  }
 }]]))
 </script>
 
@@ -119,8 +113,8 @@ const itens = computed<DropdownMenuItem[][]>(() => ([[{
   >
     <UButton
       v-bind="{
-        ...usuario,
-        label: collapsed ? undefined : usuario?.name,
+        avatar: currentUser?.avatar,
+        label: collapsed ? undefined : currentUser?.name,
         trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
       }"
       color="neutral"

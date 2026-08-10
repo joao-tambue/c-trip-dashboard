@@ -3,6 +3,7 @@ import { formatTimeAgo } from '@vueuse/core'
 import type { Notificacao } from '~/types'
 
 const { slideoverNotificacoesAberto } = usePainel()
+const { currentUser } = useAuth()
 
 const mensagensTempoAgo = {
   justNow: 'agora mesmo',
@@ -18,7 +19,10 @@ const mensagensTempoAgo = {
   invalid: ''
 }
 
-const { data: notificacoes } = await useFetch<Notificacao[]>('/api/notifications')
+const { data: notificacoes } = await useFetch<Notificacao[]>('/api/notifications', {
+  query: { perfil: currentUser.value?.perfil },
+  default: () => []
+})
 </script>
 
 <template>
@@ -27,10 +31,9 @@ const { data: notificacoes } = await useFetch<Notificacao[]>('/api/notifications
     title="Notificações"
   >
     <template #body>
-      <NuxtLink
+      <div
         v-for="notificacao in notificacoes"
         :key="notificacao.id"
-        :to="`/inbox?id=${notificacao.id}`"
         class="px-3 py-2.5 rounded-md hover:bg-elevated/50 flex items-center gap-3 relative -mx-3 first:-mt-3 last:-mb-3"
       >
         <UChip
@@ -38,20 +41,18 @@ const { data: notificacoes } = await useFetch<Notificacao[]>('/api/notifications
           :show="!!notificacao.unread"
           inset
         >
-          <UAvatar
-            v-bind="notificacao.sender.avatar"
-            :alt="notificacao.sender.name"
-            size="md"
-          />
+          <span class="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
+            <UIcon :name="notificacao.icon" class="size-4" />
+          </span>
         </UChip>
 
         <div class="text-sm flex-1">
-          <p class="flex items-center justify-between">
-            <span class="text-highlighted font-medium">{{ notificacao.sender.name }}</span>
+          <p class="flex items-center justify-between gap-2">
+            <span class="text-highlighted font-medium">{{ notificacao.title }}</span>
 
             <time
               :datetime="notificacao.date"
-              class="text-muted text-xs"
+              class="text-muted text-xs shrink-0"
               v-text="formatTimeAgo(new Date(notificacao.date), { messages: mensagensTempoAgo })"
             />
           </p>
@@ -60,7 +61,11 @@ const { data: notificacoes } = await useFetch<Notificacao[]>('/api/notifications
             {{ notificacao.body }}
           </p>
         </div>
-      </NuxtLink>
+      </div>
+
+      <p v-if="!notificacoes.length" class="text-sm text-muted text-center py-6">
+        Sem notificações por agora.
+      </p>
     </template>
   </USlideover>
 </template>
